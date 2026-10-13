@@ -17,7 +17,10 @@ export function derive(base,accent) {
  if(!hex(base)||!hex(accent))throw new TypeError('Expected six-digit hex colors');
  const dark=luminance(base)<.25;
  const ink=legible(dark?'#edf1f4':'#344353',base,7);
- return {base,accent,ink,muted:legible(mix(ink,base,.3),base),light:mix(base,'#ffffff',dark?.08:.64),shade:mix(base,'#101927',dark?.42:.17),edge:mix(base,'#ffffff',dark?.13:.68),'accent-ink':legible(accent,base),'on-accent':legible('#ffffff',accent),user:mix(base,accent,dark?.09:.08)};
+ const user=mix(base,accent,dark?.09:.08);
+ // Light-mode small labels need stronger contrast, including on tinted user bubbles.
+ const accentInk=legible(accent,dark?base:user,dark?4.5:6);
+ return {base,accent,ink,muted:legible(mix(ink,base,.3),base),light:mix(base,'#ffffff',dark?.08:.64),shade:mix(base,'#101927',dark?.42:.17),edge:mix(base,'#ffffff',dark?.13:.68),'accent-ink':accentInk,'on-accent':legible('#ffffff',accent),user};
 }
 const clamp=(v,min,max)=>v===null||v===undefined?null:Number.isFinite(Number(v))?Math.min(max,Math.max(min,Number(v))):null;
 export function normalize(raw={}) {

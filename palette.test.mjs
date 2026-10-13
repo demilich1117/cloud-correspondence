@@ -14,3 +14,10 @@ test('invalid settings are bounded without losing unrelated fields or sharing pa
  assert.equal(normalize(null).depth,null);assert.equal(resolveMode('system',true),'dark');assert.equal(resolveMode('light',true),'light');
 });
 test('invalid color input cannot become CSS',()=>assert.throws(()=>derive('#fff;}', '#000000'),TypeError));
+test('light preset accent labels retain strong contrast on both bubble backgrounds',()=>{
+ for(const [name,base,accent] of PRESETS.light){
+  const p=derive(base,accent);
+  for(const bg of [base,p.user])assert.ok(contrast(p['accent-ink'],bg)>=6,`${name} label on ${bg}`);
+ }
+ assert.equal(derive('#292e32','#dfa46b')['accent-ink'],'#dfa46b');
+});

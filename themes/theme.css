@@ -1,4 +1,4 @@
-/* 云间 · Cloud Correspondence 1.0.2 | SillyTavern 1.19.0
+/* 云间 · Cloud Correspondence 1.0.3 | SillyTavern 1.19.0
    原创软气泡与石墨深色。无外链图片 / 字体，--cc-* 支持工作台微调。 */
 :root {
   --cc-theme: cloud-correspondence;
@@ -6,7 +6,7 @@
   --cc-accent: #6575b6; /* 浅色强调色 */
   --cc-ink: #344353; --cc-muted: #596777;
   --cc-light: #ffffff; --cc-shade: #b7c3d3; --cc-edge: #f7faff;
-  --cc-accent-ink: #4c5b9a; --cc-on-accent: #ffffff; --cc-user: #dbe2f1;
+  --cc-accent-ink: #3f4d85; --cc-on-accent: #ffffff; --cc-user: #dbe2f1;
   --cc-depth: 1; /* 凹凸强度 */
   --cc-radius: 28px; /* 气泡圆角 */
   --cc-font-size: 17px; /* 正文字号 */
@@ -34,7 +34,7 @@ body {
   background: var(--cc-base); color: var(--cc-ink); text-shadow: none;
 }
 #bg1, #bg_custom { opacity: 0; pointer-events: none; }
-#top-bar { background: transparent; box-shadow: none; border: 0; backdrop-filter: none; }
+#top-bar { background: transparent; box-shadow: none; border: 0; backdrop-filter: none; pointer-events: none; }
 * { scrollbar-color: var(--cc-shade) transparent; scrollbar-width: thin; }
 ::selection { background: color-mix(in srgb, var(--cc-accent) 28%, var(--cc-base)); }
 :where(button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 2px solid var(--cc-accent-ink); outline-offset: 3px; }
@@ -130,7 +130,13 @@ body.hideChatAvatars #chat .mes .mes_block { grid-column: 1; }
 #rightSendForm #send_but:hover, #rightSendForm #mes_stop:hover { color: var(--cc-on-accent); filter: brightness(1.05); }
 #send_form .mes_stop { padding: 14px 0; text-align: center; }
 #send_form :is(.file_attached, #file_form) { max-width: 100%; color: var(--cc-muted); }
-#top-settings-holder { position: fixed; inset: 20px auto 20px 18px; margin: 0; width: 72px; height: calc(100dvh - 40px); display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; padding: 12px 8px; border-radius: 24px; background: var(--cc-base); box-shadow: var(--cc-lift); border: 1px solid var(--cc-edge); }
+/* absolute + auto 不建立固定侧栏的堆叠上下文；底板、按钮与抽屉分别分层。
+   !important 仅解除宿主在其他面板打开时给整个 holder 设置的 4005 层级。 */
+#top-settings-holder { position: absolute; z-index: auto !important; inset: 20px auto 20px 18px; margin: 0; width: 72px; height: calc(100dvh - 40px); display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; padding: 12px 8px; border-radius: 24px; background: transparent; box-shadow: none; border: 1px solid transparent; pointer-events: none; }
+#top-settings-holder::before { content: ""; position: absolute; inset: -1px; z-index: 31; border-radius: inherit; background: var(--cc-base); box-shadow: var(--cc-lift); border: 1px solid var(--cc-edge); pointer-events: none; }
+#top-settings-holder > .drawer > .drawer-toggle, #cc-open, #cc-mobile-menu { z-index: 32; pointer-events: auto; }
+#cc-open { position: relative; }
+body > .zoomed_avatar[forChar] { z-index: 33; }
 #top-settings-holder > .drawer { width: 54px; height: 54px; flex: 0 1 54px; min-height: 40px; }
 #top-settings-holder > .drawer > .drawer-toggle { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 16px; box-shadow: var(--cc-small); background: var(--cc-base); position: relative; }
 #top-settings-holder > .drawer > .drawer-toggle .drawer-icon { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 0; font-size: 21px; color: var(--cc-muted); opacity: 1; border-radius: inherit; }
@@ -139,7 +145,7 @@ body.hideChatAvatars #chat .mes .mes_block { grid-column: 1; }
 #top-settings-holder > .drawer > .drawer-toggle:active { box-shadow: var(--cc-inset); }
 #top-settings-holder > .drawer > .drawer-toggle:focus-within { outline: 2px solid var(--cc-accent-ink); outline-offset: 3px; }
 .drawer-content, #movingDivs > .drawer-content { background: var(--cc-base); color: var(--cc-ink); border: 1px solid var(--cc-edge); border-radius: 24px; padding: 22px; box-shadow: var(--cc-lift); backdrop-filter: none; text-shadow: none; }
-#top-settings-holder .drawer-content { position: fixed; top: 22px; left: auto; right: 22px; margin: 0; width: min(440px, calc(100vw - 130px)); min-width: 0; max-height: calc(100dvh - 44px); }
+#top-settings-holder .drawer-content { position: fixed; z-index: 3005; pointer-events: auto; top: 22px; left: auto; right: 22px; margin: 0; width: min(440px, calc(100vw - 130px)); min-width: 0; max-height: calc(100dvh - 44px); }
 #top-settings-holder :is(#user-settings-block, #AdvancedFormatting, #WorldInfo) { width: min(800px, calc(100vw - 130px)); }
 #top-settings-holder .drawer-content.openDrawer { overflow-y: auto; overflow-x: hidden; }
 body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc(100vw - 130px) !important; top: 22px !important; right: 22px !important; }
@@ -207,7 +213,7 @@ body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc
   html[data-cc-active]:not([data-cc-menu]) #top-settings-holder > .drawer:not(#cc-appearance-button):not(#rightNavHolder):not(#user-settings-button) { display: none; }
   html[data-cc-active] #top-settings-holder > .drawer { flex: 0 0 44px; width: 44px; }
   html[data-cc-active][data-cc-menu] #top-settings-holder { height: auto; min-height: 58px; flex-wrap: wrap; justify-content: flex-start; padding: 60px 10px 10px; gap: 10px; }
-  html[data-cc-active][data-cc-menu] #top-settings-holder::after { content: "全部功能"; position: absolute; top: 20px; right: 16px; font-size: 12px; color: var(--cc-muted); pointer-events: none; }
+  html[data-cc-active][data-cc-menu] #top-settings-holder::after { content: "全部功能"; position: absolute; z-index: 32; top: 20px; right: 16px; font-size: 12px; color: var(--cc-muted); pointer-events: none; }
   #sheld { inset: calc(78px + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom) 0; width: 100%; height: calc(100dvh - 78px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: none; margin: 0; min-height: 0; }
   #chat { padding: 14px 12px 18px; gap: var(--cc-gap); }
   #chat .mes { width: 100%; max-width: 100%; grid-template-columns: 40px minmax(0, 1fr); column-gap: 8px; padding-bottom: 26px; }

@@ -8,7 +8,7 @@
   "hooks": { "disable": "disable" },
   "author": "Cloud Correspondence",
   "homePage": "https://github.com/demilich1117/cloud-correspondence",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "minimum_client_version": "1.19.0",
   "description": "云间主题配套调色、明暗切换与手机菜单。无外部请求。"
 }
