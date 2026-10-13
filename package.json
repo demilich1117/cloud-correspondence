@@ -1,0 +1,12 @@
+{
+  "name": "cloud-correspondence",
+  "version": "1.0.2",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "description": "云间 SillyTavern 主题与配套外观扩展",
+  "scripts": {
+    "check": "node --check index.js && node --check palette.mjs",
+    "test": "node --test palette.test.mjs"
+  }
+}

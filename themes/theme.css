@@ -1,0 +1,249 @@
+/* 云间 · Cloud Correspondence 1.0.2 | SillyTavern 1.19.0
+   原创软气泡与石墨深色。无外链图片 / 字体，--cc-* 支持工作台微调。 */
+:root {
+  --cc-theme: cloud-correspondence;
+  --cc-base: #e3e9ef; /* 浅色底色 */
+  --cc-accent: #6575b6; /* 浅色强调色 */
+  --cc-ink: #344353; --cc-muted: #596777;
+  --cc-light: #ffffff; --cc-shade: #b7c3d3; --cc-edge: #f7faff;
+  --cc-accent-ink: #4c5b9a; --cc-on-accent: #ffffff; --cc-user: #dbe2f1;
+  --cc-depth: 1; /* 凹凸强度 */
+  --cc-radius: 28px; /* 气泡圆角 */
+  --cc-font-size: 17px; /* 正文字号 */
+  --cc-line-height: 1.85; /* 正文行高 */
+  --cc-gap: 28px; /* 消息间距 */
+  --cc-avatar: 52px; /* 头像大小 */
+  --cc-lift: calc(6px * var(--cc-depth)) calc(6px * var(--cc-depth)) calc(14px * var(--cc-depth)) var(--cc-shade), calc(-6px * var(--cc-depth)) calc(-6px * var(--cc-depth)) calc(14px * var(--cc-depth)) var(--cc-light);
+  --cc-small: calc(3px * var(--cc-depth)) calc(3px * var(--cc-depth)) calc(7px * var(--cc-depth)) var(--cc-shade), calc(-3px * var(--cc-depth)) calc(-3px * var(--cc-depth)) calc(7px * var(--cc-depth)) var(--cc-light);
+  --cc-inset: inset calc(3px * var(--cc-depth)) calc(3px * var(--cc-depth)) calc(7px * var(--cc-depth)) var(--cc-shade), inset calc(-3px * var(--cc-depth)) calc(-3px * var(--cc-depth)) calc(7px * var(--cc-depth)) var(--cc-light);
+}
+:root[data-cc-mode="dark"] {
+  --cc-base: #292e32; --cc-accent: #dfa46b; --cc-ink: #e2e7e9; --cc-muted: #a2afb8;
+  --cc-light: #394147; --cc-shade: #191d21; --cc-edge: #485159;
+  --cc-accent-ink: #edb782; --cc-on-accent: #28241f; --cc-user: #30373e; color-scheme: dark;
+}
+:root:not([data-cc-mode="dark"]) { color-scheme: light; }
+body {
+  --SmartThemeBodyColor: var(--cc-ink); --SmartThemeEmColor: var(--cc-muted);
+  --SmartThemeUnderlineColor: var(--cc-ink); --SmartThemeQuoteColor: var(--cc-accent-ink);
+  --SmartThemeBlurTintColor: var(--cc-base); --SmartThemeChatTintColor: transparent;
+  --SmartThemeUserMesBlurTintColor: var(--cc-user); --SmartThemeBotMesBlurTintColor: var(--cc-base);
+  --SmartThemeBorderColor: color-mix(in srgb, var(--cc-ink) 15%, transparent);
+  --SmartThemeShadowColor: transparent; --SmartThemeBlurStrength: 0px; --cc-reserved: 0px;
+  --mainFontFamily: "Segoe UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  background: var(--cc-base); color: var(--cc-ink); text-shadow: none;
+}
+#bg1, #bg_custom { opacity: 0; pointer-events: none; }
+#top-bar { background: transparent; box-shadow: none; border: 0; backdrop-filter: none; }
+* { scrollbar-color: var(--cc-shade) transparent; scrollbar-width: thin; }
+::selection { background: color-mix(in srgb, var(--cc-accent) 28%, var(--cc-base)); }
+:where(button, input, select, textarea, summary, [tabindex]):focus-visible { outline: 2px solid var(--cc-accent-ink); outline-offset: 3px; }
+#sheld {
+  inset: 22px calc(24px + var(--cc-reserved)) 22px 108px;
+  width: min(var(--sheldWidth), calc(100% - 132px - var(--cc-reserved)));
+  height: calc(100dvh - 44px); max-height: calc(100dvh - 44px);
+  min-height: 0; margin: 0 auto; overflow: visible;
+}
+#chat {
+  min-height: 0; max-height: none; flex: 1 1 0; background: transparent; border: 0; box-shadow: none;
+  padding: 20px 28px 28px; gap: var(--cc-gap); overflow-x: hidden; overflow-y: auto;
+  backdrop-filter: none; text-shadow: none; scroll-padding: 20px;
+}
+#chat .mes {
+  --mes-right-spacing: 0px;
+  display: grid; grid-template-columns: var(--cc-avatar) minmax(0, 1fr); column-gap: 14px; align-items: start;
+  /* 阅读宽度随原生页面宽度变化，不再另设固定像素上限。 */
+  width: 94%; max-width: 100%; padding: 0 0 30px; margin: 0; flex: 0 0 auto;
+  background: transparent; border: 0; border-radius: 0; box-shadow: none;
+}
+#chat .mes .mesAvatarWrapper { grid-column: 1; grid-row: 1; width: var(--cc-avatar); padding-top: 7px; }
+#chat .mes .avatar { width: var(--cc-avatar); height: var(--cc-avatar); margin: 0; overflow: visible; }
+#chat .mes .avatar img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 17px; padding: 4px;
+  background: var(--cc-base); border: 1px solid var(--cc-edge); box-shadow: var(--cc-small);
+}
+#chat .mes .mes_block {
+  position: relative; isolation: isolate; grid-column: 2; grid-row: 1;
+  display: flex; flex-direction: column; min-width: 0; width: 100%; padding: 0; overflow: visible;
+}
+#chat .mes .mes_block::before {
+  content: ""; position: absolute; z-index: -1; inset: 36px 0 0; background: var(--cc-base);
+  border: 1px solid color-mix(in srgb, var(--cc-edge) 82%, transparent);
+  border-radius: 12px var(--cc-radius) var(--cc-radius) var(--cc-radius);
+  box-shadow: var(--cc-lift); pointer-events: none;
+}
+#chat .mes .ch_name { order: 0; min-height: 36px; align-items: center; gap: 4px 12px; padding: 0 4px 9px; font-size: 13px; line-height: 1.4; }
+#chat .mes .name_text { font-size: 14px; font-weight: 650; color: var(--cc-accent-ink); }
+#chat .mes .timestamp { font-size: 11px; color: var(--cc-muted); opacity: 1; }
+#chat .mes .mes_text { order: 1; padding: 22px 24px; font-family: var(--mainFontFamily); font-size: var(--cc-font-size); line-height: var(--cc-line-height); font-weight: 400; color: var(--cc-ink); }
+#chat .mes .mes_text p { margin: 0 0 .85em; }
+#chat .mes .mes_text p:last-child { margin-bottom: 0; }
+#chat .mes[is_user="true"] { grid-template-columns: minmax(0, 1fr) var(--cc-avatar); align-self: flex-end; width: fit-content; max-width: 80%; }
+#chat .mes[is_user="true"] .mesAvatarWrapper { grid-column: 2; }
+#chat .mes[is_user="true"] .mes_block { grid-column: 1; min-width: 160px; }
+#chat .mes[is_user="true"] .mes_block::before { background: var(--cc-user); box-shadow: var(--cc-inset); border-radius: var(--cc-radius) 10px var(--cc-radius) var(--cc-radius); }
+#chat .mes[is_user="true"] .ch_name { flex-direction: row-reverse; }
+#chat .mes[is_user="true"] .ch_name > .flex1 { justify-content: flex-end; }
+#chat .mes[is_system="true"] { width: 100%; opacity: 1; }
+#chat .mes[is_system="true"] .mes_block::before { box-shadow: none; border: 1px dashed var(--SmartThemeBorderColor); }
+#chat .mes[is_system="true"] .mes_text { font-size: 14px; color: var(--cc-muted); }
+#chat .mes .mes_buttons { opacity: 1; color: var(--cc-muted); gap: 4px; }
+#chat .mes .mes_button { min-width: 28px; min-height: 28px; padding: 6px; border-radius: 8px; opacity: .8; }
+#chat .mes .mes_button:hover { opacity: 1; color: var(--cc-accent-ink); background: var(--cc-user); }
+#chat .mes .mes_edit_buttons { flex-wrap: wrap; gap: 6px; }
+#chat .mes .extraMesButtons { background: var(--cc-base); border-radius: 12px; box-shadow: var(--cc-small); z-index: 4; }
+#chat .mes :is(.edit_textarea, .reasoning_edit_textarea) { width: 100%; border-radius: 16px; padding: 16px; background: var(--cc-base); color: var(--cc-ink); box-shadow: var(--cc-inset); font-size: var(--cc-font-size); line-height: 1.75; }
+#chat .mes .mes_reasoning_details { order: 2; margin: 0 16px 16px; border: 0; background: transparent; border-radius: 12px; overflow: hidden; }
+#chat .mes .mes_reasoning_summary { margin: 0; min-width: 0; padding: 9px 12px; background: var(--cc-base); color: var(--cc-accent-ink); border-radius: 12px; box-shadow: var(--cc-inset); min-height: 38px; cursor: pointer; }
+#chat .mes .mes_reasoning_header { padding: 0; border: 0; box-shadow: none; background: none; font-size: 12px; }
+#chat .mes .mes_reasoning { margin: 0; padding: 16px 10px 8px; color: var(--cc-muted); font-size: 14px; line-height: 1.75; }
+#chat .mes :is(.mes_media_wrapper, .mes_file_wrapper) { order: 3; max-width: 100%; padding-inline: 20px; }
+#chat .mes .mes_bias { order: 4; padding-inline: 20px; }
+#chat .mes :is(img, video):not(.avatar img) { max-width: 100%; }
+#chat .mes .mes_img_container { border-radius: 16px; overflow: hidden; }
+#chat .mes .swipe_left { left: auto; right: 78px; bottom: -2px; }
+#chat .mes .swipeRightBlock { flex-direction: row; gap: 2px; right: 4px; bottom: -2px; align-items: center; }
+#chat .mes .swipe_right { order: 1; }
+#chat .mes :is(.swipe_left, .swipe_right) { z-index: 3; width: 30px; height: 28px; font-size: 13px; color: var(--cc-accent-ink); }
+#chat .mes .swipes-counter { margin: 0; height: 28px; align-items: center; opacity: .8; font-variant-numeric: tabular-nums; }
+#chat .mes blockquote { border-left: 3px solid var(--cc-accent); margin: 1em 0; padding: 8px 16px; color: var(--cc-muted); background: color-mix(in srgb, var(--cc-accent) 7%, transparent); border-radius: 0 10px 10px 0; }
+#chat .mes pre { position: relative; overflow: auto; max-width: 100%; border-radius: 14px; box-shadow: var(--cc-inset); border: 1px solid var(--SmartThemeBorderColor); padding: 16px; background: var(--cc-base); }
+#chat .mes code { text-shadow: none; font-size: .86em; }
+#chat .mes :not(pre) > code { background: var(--cc-user); border-radius: 5px; padding: 2px 5px; color: var(--cc-accent-ink); }
+#chat .mes table { display: block; overflow-x: auto; border-collapse: collapse; max-width: 100%; }
+#chat .mes :is(td, th) { border-color: var(--SmartThemeBorderColor); padding: 9px 12px; }
+#chat .mes th { background: var(--cc-user); }
+#chat .mes a { color: var(--cc-accent-ink); text-underline-offset: 3px; }
+#chat .mes.selected .mes_block::before { outline: 2px solid var(--cc-accent); }
+body.hideChatAvatars #chat .mes { grid-template-columns: minmax(0, 1fr); }
+body.hideChatAvatars #chat .mes .mes_block { grid-column: 1; }
+#form_sheld { flex: 0 0 auto; min-width: 0; margin: 0; padding: 0 18px; }
+#send_form { padding: 14px; border-radius: 26px; border: 1px solid var(--cc-edge); background: var(--cc-base); box-shadow: var(--cc-lift); backdrop-filter: none; }
+#nonQRFormItems { gap: 12px; align-items: flex-end; min-width: 0; }
+#send_textarea { min-width: 0; min-height: 56px; max-height: min(30dvh, 260px); flex: 1 1 auto; margin: 0; border: 1px solid transparent; border-radius: 18px; padding: 16px 18px; background: var(--cc-base); color: var(--cc-ink); box-shadow: var(--cc-inset); font-family: var(--mainFontFamily); font-size: 16px; line-height: 1.5; overflow-y: auto; }
+#send_textarea::placeholder { color: var(--cc-muted); opacity: 1; }
+#leftSendForm, #rightSendForm { width: auto; flex: 0 0 auto; flex-wrap: nowrap; padding: 0; gap: 8px; align-items: center; align-self: flex-end; }
+#rightSendForm { max-width: 35%; }
+#rightSendForm > div:not(.displayNone), #leftSendForm > div { width: 48px; height: 52px; border-radius: 16px; background: var(--cc-base); color: var(--cc-muted); box-shadow: var(--cc-small); opacity: 1; border: 1px solid color-mix(in srgb, var(--cc-edge) 65%, transparent); font-size: 20px; transition: color 140ms, box-shadow 140ms; }
+#rightSendForm #send_but, #rightSendForm #mes_stop { background: var(--cc-accent); color: var(--cc-on-accent); }
+#rightSendForm > div:hover, #leftSendForm > div:hover { filter: none; color: var(--cc-accent-ink); }
+#rightSendForm #send_but:hover, #rightSendForm #mes_stop:hover { color: var(--cc-on-accent); filter: brightness(1.05); }
+#send_form .mes_stop { padding: 14px 0; text-align: center; }
+#send_form :is(.file_attached, #file_form) { max-width: 100%; color: var(--cc-muted); }
+#top-settings-holder { position: fixed; inset: 20px auto 20px 18px; margin: 0; width: 72px; height: calc(100dvh - 40px); display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; padding: 12px 8px; border-radius: 24px; background: var(--cc-base); box-shadow: var(--cc-lift); border: 1px solid var(--cc-edge); }
+#top-settings-holder > .drawer { width: 54px; height: 54px; flex: 0 1 54px; min-height: 40px; }
+#top-settings-holder > .drawer > .drawer-toggle { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 16px; box-shadow: var(--cc-small); background: var(--cc-base); position: relative; }
+#top-settings-holder > .drawer > .drawer-toggle .drawer-icon { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; padding: 0; font-size: 21px; color: var(--cc-muted); opacity: 1; border-radius: inherit; }
+#top-settings-holder > .drawer > .drawer-toggle:has(.openIcon) { box-shadow: var(--cc-inset); background: var(--cc-user); }
+#top-settings-holder > .drawer > .drawer-toggle .openIcon { color: var(--cc-accent-ink); }
+#top-settings-holder > .drawer > .drawer-toggle:active { box-shadow: var(--cc-inset); }
+#top-settings-holder > .drawer > .drawer-toggle:focus-within { outline: 2px solid var(--cc-accent-ink); outline-offset: 3px; }
+.drawer-content, #movingDivs > .drawer-content { background: var(--cc-base); color: var(--cc-ink); border: 1px solid var(--cc-edge); border-radius: 24px; padding: 22px; box-shadow: var(--cc-lift); backdrop-filter: none; text-shadow: none; }
+#top-settings-holder .drawer-content { position: fixed; top: 22px; left: auto; right: 22px; margin: 0; width: min(440px, calc(100vw - 130px)); min-width: 0; max-height: calc(100dvh - 44px); }
+#top-settings-holder :is(#user-settings-block, #AdvancedFormatting, #WorldInfo) { width: min(800px, calc(100vw - 130px)); }
+#top-settings-holder .drawer-content.openDrawer { overflow-y: auto; overflow-x: hidden; }
+body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc(100vw - 130px) !important; top: 22px !important; right: 22px !important; }
+.drawer-content :is(h3, h4, h5) { color: var(--cc-ink); letter-spacing: .01em; }
+.drawer-content .inline-drawer { border: 0; margin-bottom: 14px; }
+.drawer-content .inline-drawer-header { border: 0; border-radius: 14px; padding: 12px 14px; gap: 12px; background: var(--cc-base); box-shadow: var(--cc-small); margin-bottom: 12px; }
+.drawer-content .inline-drawer-content { padding: 4px 4px 12px; }
+.drawer-content :is(.inline-drawer-icon, .custom-drawer-icon) { filter: none; color: var(--cc-muted); font-size: 17px; }
+.drawer-content :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="button"]):not([type="submit"]), textarea, select),
+:is(.popup, dialog) :is(.text_pole, select) { min-height: 38px; padding: 9px 12px; color: var(--cc-ink); background: var(--cc-base); border: 1px solid color-mix(in srgb, var(--cc-shade) 55%, transparent); border-radius: 12px; box-shadow: var(--cc-inset); text-shadow: none; max-width: 100%; font-family: var(--mainFontFamily); }
+.drawer-content :is(select, input[type="number"]) { font-variant-numeric: tabular-nums; }
+.drawer-content select option { color: var(--cc-ink); background: var(--cc-base); }
+.drawer-content :is(input, textarea)::placeholder { color: var(--cc-muted); opacity: .9; }
+.drawer-content input[type="range"] { appearance: none; background: var(--cc-base); border: 0; box-shadow: var(--cc-inset); border-radius: 20px; height: 10px; padding: 0; margin-block: 16px; accent-color: var(--cc-accent); }
+.drawer-content input[type="range"]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; border: 4px solid var(--cc-base); background: var(--cc-accent); box-shadow: var(--cc-small); cursor: ew-resize; }
+.drawer-content input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border: 4px solid var(--cc-base); border-radius: 50%; background: var(--cc-accent); box-shadow: var(--cc-small); }
+/* 1.19 的 neo-range-slider 自带 !important；只覆盖其材质与轨道尺寸。 */
+.drawer-content input.neo-range-slider { height: 9px !important; background: var(--cc-base) !important; box-shadow: var(--cc-inset) !important; border-radius: 9px !important; margin: 12px 0 !important; filter: none; }
+.drawer-content input[type="range"]:hover { filter: none; }
+.drawer-content input[type="checkbox"] { --SmartThemeCheckboxTickColor: var(--cc-on-accent); accent-color: var(--cc-accent); appearance: none; width: 19px; height: 19px; flex: 0 0 19px; border-radius: 6px; border: 1px solid var(--cc-shade); margin: 4px; background: var(--cc-base); box-shadow: var(--cc-inset); display: inline-grid; place-content: center; vertical-align: middle; filter: none; }
+.drawer-content input[type="checkbox"]:checked { background: var(--cc-accent); box-shadow: var(--cc-small); border-color: var(--cc-accent); }
+/* 使用宿主 ::before 的单枚勾选标记，避免与额外 ::after 叠画。 */
+.drawer-content input[type="checkbox"]::before { width: 11px; height: 11px; }
+.drawer-content input[type="radio"] { accent-color: var(--cc-accent); width: 18px; height: 18px; }
+.drawer-content input:disabled { opacity: .5; cursor: not-allowed; }
+.drawer-content .checkbox_label { gap: 9px; min-height: 32px; align-items: center; }
+.menu_button, :is(.drawer-content, .popup) button:not(.drawer-icon):not(.cc-swatch):not(.cc-mode), #options, .options-content { color: var(--cc-ink); background: var(--cc-base); border-color: var(--cc-edge); border-radius: 10px; box-shadow: var(--cc-small); text-shadow: none; }
+.menu_button:hover { background: var(--cc-user); color: var(--cc-accent-ink); }
+.menu_button:active { box-shadow: var(--cc-inset); }
+.menu_button.redWarningBG, .menu_button.redWarningBG:hover { color: #b83444; border-color: #b83444; }
+:root[data-cc-mode="dark"] .menu_button.redWarningBG { color: #ff9ca7; border-color: #ff9ca7; }
+:is(.popup, dialog.popup) { color: var(--cc-ink); background: var(--cc-base); border: 1px solid var(--cc-edge); border-radius: 24px; box-shadow: var(--cc-lift); }
+#options { padding: 10px; border: 1px solid var(--cc-edge); }
+.options-content { box-shadow: none; }
+.options-content a { border-radius: 8px; padding: 10px; }
+.options-content a:hover { background: var(--cc-user); }
+:is(.character_select, .group_select, .bogus_folder_select) { border-radius: 14px; padding: 10px; margin-block: 4px; }
+:is(.character_select, .group_select, .bogus_folder_select):hover { background: var(--cc-user); box-shadow: var(--cc-inset); }
+.character_select .avatar img, .group_select .avatar img { border-radius: 12px; box-shadow: var(--cc-small); border-color: var(--cc-edge); }
+.drawer-content .select2-container .select2-selection { background: var(--cc-base); border-color: var(--cc-shade); border-radius: 10px; color: var(--cc-ink); box-shadow: var(--cc-inset); min-height: 36px; }
+.select2-dropdown { color: var(--cc-ink); background: var(--cc-base); border-color: var(--cc-shade); }
+.select2-container--default .select2-results__option--highlighted[aria-selected] { background: var(--cc-accent); color: var(--cc-on-accent); }
+/* 保留 Toastr 原生类型配色、图标定位与 no-repeat；background 简写会把图标重置为平铺。 */
+#toast-container > div { border: 1px solid var(--cc-edge); box-shadow: var(--cc-small); opacity: 1; border-radius: 14px; }
+:root[data-cc-mode="dark"] #chat .mes .mes_block::before { border-color: var(--cc-edge); }
+:root[data-cc-mode="dark"] #chat .mes[is_user="false"]:not([is_system="true"]) .mes_text { border-left: 2px solid var(--cc-accent); margin: 14px 16px; padding: 6px 14px; }
+@media (min-width: 1200px) { body:has(#cc-panel[open]) { --cc-reserved: 340px; } }
+@media (max-height: 740px) and (min-width: 768px) {
+  #top-settings-holder { gap: 7px; padding-block: 8px; }
+  #top-settings-holder > .drawer { height: 42px; flex-basis: 42px; min-height: 34px; }
+  #top-settings-holder > .drawer > .drawer-toggle .drawer-icon { font-size: 18px; }
+  #cc-open { height: 42px; }
+}
+@media (max-height: 520px) and (min-width: 768px) { #top-settings-holder { overflow-y: auto; overflow-x: hidden; } }
+@media (max-width: 1000px) { #chat { padding-inline: 16px; } #chat .mes { width: 98%; } #chat .mes[is_user="true"] { max-width: 90%; } }
+@media (max-width: 767px) {
+  :root { --cc-font-size: 16px; --cc-avatar: 40px; --cc-gap: 20px; --cc-radius: 23px; }
+  html, body { height: 100%; min-height: 0; }
+  #top-settings-holder { inset: max(8px, env(safe-area-inset-top)) 10px auto; width: auto; height: 58px; padding: 6px 8px; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; gap: 7px; border-radius: 18px; }
+  #top-settings-holder > .drawer { flex: 1 1 0; width: 36px; min-width: 0; height: 44px; min-height: 44px; }
+  #top-settings-holder > .drawer > .drawer-toggle { border-radius: 11px; box-shadow: none; }
+  #top-settings-holder > .drawer > .drawer-toggle .drawer-icon { font-size: 18px; }
+  #top-settings-holder > .drawer > .drawer-toggle:has(.openIcon) { box-shadow: var(--cc-inset); }
+  html[data-cc-active] #top-settings-holder { padding-left: 102px; justify-content: flex-end; }
+  html[data-cc-active]:not([data-cc-menu]) #top-settings-holder > .drawer:not(#cc-appearance-button):not(#rightNavHolder):not(#user-settings-button) { display: none; }
+  html[data-cc-active] #top-settings-holder > .drawer { flex: 0 0 44px; width: 44px; }
+  html[data-cc-active][data-cc-menu] #top-settings-holder { height: auto; min-height: 58px; flex-wrap: wrap; justify-content: flex-start; padding: 60px 10px 10px; gap: 10px; }
+  html[data-cc-active][data-cc-menu] #top-settings-holder::after { content: "全部功能"; position: absolute; top: 20px; right: 16px; font-size: 12px; color: var(--cc-muted); pointer-events: none; }
+  #sheld { inset: calc(78px + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom) 0; width: 100%; height: calc(100dvh - 78px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: none; margin: 0; min-height: 0; }
+  #chat { padding: 14px 12px 18px; gap: var(--cc-gap); }
+  #chat .mes { width: 100%; max-width: 100%; grid-template-columns: 40px minmax(0, 1fr); column-gap: 8px; padding-bottom: 26px; }
+  #chat .mes .mesAvatarWrapper { padding-top: 0; z-index: 2; }
+  #chat .mes .avatar img { border-radius: 13px; padding: 3px; }
+  #chat .mes .mes_block { grid-column: 1 / -1; padding-top: 0; }
+  #chat .mes .ch_name { padding-left: 50px; min-height: 47px; padding-bottom: 11px; gap: 3px; }
+  #chat .mes .mes_block::before { inset: 47px 0 0; }
+  #chat .mes .mes_text { padding: 18px; font-size: var(--cc-font-size); }
+  #chat .mes .mes_buttons { gap: 0; }
+  #chat .mes .mes_button { min-width: 30px; min-height: 30px; padding: 8px; }
+  #chat .mes .timestamp { font-size: 10px; }
+  #chat .mes .name_text { font-size: 13px; }
+  #chat .mes[is_user="true"] { max-width: 92%; min-width: 180px; grid-template-columns: minmax(0, 1fr) 40px; }
+  #chat .mes[is_user="true"] .mes_block { grid-column: 1 / -1; }
+  #chat .mes[is_user="true"] .ch_name { padding-left: 0; padding-right: 50px; }
+  #chat .mes .mes_reasoning_details { margin: 0 12px 12px; }
+  #chat .mes .mes_reasoning_summary { font-size: 11px; padding: 8px 10px; min-height: 40px; }
+  #chat .mes :is(.swipe_left, .swipe_right) { width: 34px; height: 30px; }
+  #form_sheld { padding: 6px 10px 10px; }
+  #send_form { padding: 9px; border-radius: 22px; }
+  #nonQRFormItems { gap: 8px; }
+  #send_textarea { min-height: 46px; padding: 11px 12px; border-radius: 14px; font-size: 16px; }
+  #leftSendForm > div, #rightSendForm > div:not(.displayNone) { width: 42px; height: 46px; font-size: 18px; border-radius: 13px; }
+  #rightSendForm { gap: 4px; }
+  #leftSendForm, #rightSendForm { width: auto; flex-wrap: nowrap; }
+  #leftSendForm { gap: 5px; }
+  #top-settings-holder .drawer-content, #top-settings-holder :is(#user-settings-block, #AdvancedFormatting, #WorldInfo) { top: calc(80px + env(safe-area-inset-top)); right: 8px; left: 8px; width: auto; min-width: 0; margin: 0; max-height: calc(100dvh - 98px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: 16px; border-radius: 20px; }
+  body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc(100vw - 16px) !important; top: calc(80px + env(safe-area-inset-top)) !important; right: 8px !important; }
+  .drawer-content .inline-drawer-header { padding: 12px; }
+  /* 宿主 mobile-styles.css 强制抽屉全宽；保留窄屏边距。 */
+  #top-settings-holder .drawer-content { width: calc(100dvw - 16px) !important; left: 8px !important; }
+  .drawer-content .checkbox_label { min-height: 40px; }
+  .drawer-content :is(input:not([type="checkbox"]):not([type="range"]):not([type="radio"]), select) { min-height: 42px; }
+  html[data-cc-active][data-cc-menu] #top-settings-holder :is(.drawer-content, #user-settings-block, #AdvancedFormatting, #WorldInfo) { top: var(--cc-menu-bottom, 190px); max-height: calc(100dvh - var(--cc-menu-bottom, 190px) - max(18px, env(safe-area-inset-bottom))); }
+  html[data-cc-active][data-cc-menu] body:not(.movingUI) #top-settings-holder .drawer-content.maximized { top: var(--cc-menu-bottom, 176px) !important; }
+}
+@media (max-width: 359px) { #chat .mes .timestamp { max-width: 60px; overflow: hidden; white-space: nowrap; } #chat .mes .mes_text { padding: 16px; } }
+@media (prefers-reduced-motion: reduce) { #chat *, #top-settings-holder *, #send_form * { animation-duration: 0s; transition-duration: 0s; } }

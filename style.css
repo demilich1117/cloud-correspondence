@@ -1,0 +1,57 @@
+/* Companion styles are entirely scoped; other themes keep their own layout. */
+#cc-appearance-button[hidden],#cc-mobile-menu[hidden]{display:none!important}
+#cc-open,#cc-mobile-menu,#cc-close{display:grid;place-items:center;border:1px solid var(--cc-edge);background:var(--cc-base);color:var(--cc-accent-ink);box-shadow:var(--cc-small);border-radius:17px;cursor:pointer}
+#cc-open{width:54px;height:54px;font-size:22px}
+#cc-mobile-menu{display:none}
+#cc-panel{position:fixed;inset:22px 22px 22px auto;margin:0;width:318px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 44px);padding:25px 23px 20px;border:1px solid var(--cc-edge);border-radius:28px;background:var(--cc-base);color:var(--cc-ink);box-shadow:var(--cc-lift);overflow:auto;z-index:4000;font:14px/1.55 var(--mainFontFamily,system-ui)}
+#cc-panel::backdrop{background:#10192766;backdrop-filter:blur(5px)}
+#cc-panel .cc-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#cc-panel .cc-eyebrow{font-size:8px;letter-spacing:1.6px;color:var(--cc-muted);font-weight:600}
+#cc-panel h2{font-size:27px;letter-spacing:3px;margin:3px 0 0;font-weight:650;line-height:1.4}
+#cc-panel h2 span{font-size:13px;letter-spacing:1px;font-weight:400;color:var(--cc-muted)}
+#cc-close{width:34px;height:34px;min-width:34px;font-size:18px;border-radius:12px}
+#cc-panel .cc-intro{margin:10px 0 24px;color:var(--cc-muted);font-size:12px}
+#cc-panel .cc-segment{display:flex;gap:4px;padding:5px;border-radius:15px;box-shadow:var(--cc-inset);background:var(--cc-base)}
+#cc-panel button{font-family:inherit;cursor:pointer}
+#cc-panel .cc-segment button{flex:1;min-height:36px;border:0;border-radius:11px;background:transparent;color:var(--cc-muted);font-size:12px;padding:5px 3px}
+#cc-panel .cc-segment button[aria-pressed=true]{background:var(--cc-base);color:var(--cc-accent-ink);box-shadow:var(--cc-small);font-weight:600}
+#cc-panel section{margin-top:26px}
+#cc-panel h3{font-size:13px;font-weight:650;letter-spacing:1px;margin:0 0 16px}
+#cc-presets{display:flex;gap:8px;justify-content:space-between;margin:0 0 32px}
+#cc-panel .cc-swatch{position:relative;width:36px;height:36px;padding:0;background:var(--swatch);border:2px solid var(--cc-edge);border-radius:50%;box-shadow:var(--cc-small)}
+#cc-panel .cc-swatch:after{content:'';position:absolute;width:10px;height:10px;right:2px;bottom:2px;border-radius:50%;background:var(--dot)}
+#cc-panel .cc-swatch[aria-pressed=true]{outline:2px solid var(--cc-accent-ink);outline-offset:3px}
+#cc-panel .cc-swatch span{position:absolute;top:43px;left:50%;transform:translateX(-50%);font-size:10px;white-space:nowrap;color:var(--cc-muted)}
+#cc-panel .cc-color-row{display:flex;align-items:center;gap:8px;margin:14px 0}
+#cc-panel .cc-color-row>span{flex:1;font-size:12px}
+#cc-panel input[type=color]{width:32px;height:32px;min-width:32px;padding:3px;border:1px solid var(--cc-edge);border-radius:10px;background:var(--cc-base);cursor:pointer;box-shadow:var(--cc-small)}
+#cc-panel input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+#cc-panel input[type=color]::-webkit-color-swatch{border:0;border-radius:6px}
+#cc-panel input:not([type]){width:89px;min-width:0;border:1px solid transparent;border-radius:10px;box-shadow:var(--cc-inset);background:var(--cc-base);padding:8px;color:var(--cc-ink);font:12px ui-monospace,monospace}
+#cc-panel input[aria-invalid=true]{outline:2px solid #be5662}
+#cc-panel .cc-help{font-size:11px;line-height:1.8;color:var(--cc-muted);margin:14px 0 0}
+#cc-panel .cc-adjust label{display:flex;align-items:center;justify-content:space-between;margin:18px 0 8px;font-size:12px}
+#cc-panel output{color:var(--cc-muted);font-size:11px}
+#cc-panel input[type=range]{appearance:none;width:100%;height:7px;margin:6px 0 7px;border:0;border-radius:7px;background:var(--cc-base);box-shadow:var(--cc-inset);cursor:pointer}
+#cc-panel input[type=range]::-webkit-slider-thumb{appearance:none;width:20px;height:20px;border-radius:50%;border:4px solid var(--cc-base);background:var(--cc-accent);box-shadow:var(--cc-small)}
+#cc-panel input[type=range]::-moz-range-thumb{width:12px;height:12px;border:4px solid var(--cc-base);border-radius:50%;background:var(--cc-accent);box-shadow:var(--cc-small)}
+#cc-panel footer{margin-top:28px;padding-top:17px;border-top:1px solid var(--cc-shade)}
+#cc-status{display:block;font-size:10px;color:var(--cc-muted);margin-bottom:13px;min-height:16px}
+#cc-panel .cc-actions{display:flex;gap:10px}
+#cc-panel .cc-actions button{flex:1;padding:9px 3px;border:1px solid var(--cc-edge);border-radius:11px;background:var(--cc-base);color:var(--cc-accent-ink);box-shadow:var(--cc-small);font-size:11px}
+#cc-panel button:disabled{opacity:.45;cursor:default;box-shadow:none}
+#cc-panel :is(button,input):focus-visible,#cc-open:focus-visible,#cc-mobile-menu:focus-visible{outline:2px solid var(--cc-accent-ink);outline-offset:3px}
+@media(max-width:767px){
+ #cc-open{width:44px;height:44px;font-size:19px;border-radius:13px}
+ #cc-mobile-menu:not([hidden]){display:flex;align-items:center;justify-content:center;gap:6px;position:absolute;left:8px;top:6px;width:84px;height:44px;padding:0 7px;font-size:14px;border-radius:13px}
+ #cc-mobile-menu .cc-menu-label{font:600 12px/1 var(--mainFontFamily,system-ui);white-space:nowrap}
+ #cc-mobile-menu .cc-menu-chevron{font-size:9px;transition:transform 140ms}
+ #cc-mobile-menu[aria-expanded=true]{background:var(--cc-user);box-shadow:var(--cc-inset)}
+ #cc-mobile-menu[aria-expanded=true] .cc-menu-chevron{transform:rotate(180deg)}
+ #cc-panel{inset:auto 10px max(10px,env(safe-area-inset-bottom)) 10px;width:auto;max-width:none;max-height:calc(100dvh - 32px);padding:23px;border-radius:26px}
+ #cc-panel .cc-intro{margin-bottom:17px}
+ #cc-panel section{margin-top:22px}
+ #cc-panel .cc-segment button{min-height:40px}
+}
+@media(prefers-reduced-motion:reduce){#cc-mobile-menu .cc-menu-chevron{transition:none}}
+@media(max-height:700px){#cc-panel{padding-top:16px}#cc-panel section{margin-top:18px}#cc-panel .cc-intro{margin-bottom:15px}#cc-panel .cc-adjust label{margin-top:12px}#cc-panel footer{margin-top:20px}}
