@@ -27,8 +27,8 @@
 #cc-panel input[type=color]{width:32px;height:32px;min-width:32px;padding:3px;border:1px solid var(--cc-edge);border-radius:10px;background:var(--cc-base);cursor:pointer;box-shadow:var(--cc-small)}
 #cc-panel input[type=color]::-webkit-color-swatch-wrapper{padding:0}
 #cc-panel input[type=color]::-webkit-color-swatch{border:0;border-radius:6px}
-#cc-panel input:not([type]){width:89px;min-width:0;border:1px solid transparent;border-radius:10px;box-shadow:var(--cc-inset);background:var(--cc-base);padding:8px;color:var(--cc-ink);font:12px ui-monospace,monospace}
-#cc-panel input[aria-invalid=true]{outline:2px solid #be5662}
+#cc-panel input:not([type]){width:89px;min-width:0;border:1px solid var(--cc-line,var(--cc-shade));border-radius:10px;box-shadow:var(--cc-inset);background:var(--cc-field,var(--cc-base));padding:8px;color:var(--cc-ink);font:12px ui-monospace,monospace}
+#cc-panel input[aria-invalid=true]{outline:2px solid var(--cc-danger,#be5662)}
 #cc-panel .cc-help{font-size:11px;line-height:1.8;color:var(--cc-muted);margin:14px 0 0}
 #cc-panel .cc-adjust label{display:flex;align-items:center;justify-content:space-between;margin:18px 0 8px;font-size:12px}
 #cc-panel output{color:var(--cc-muted);font-size:11px}
@@ -38,7 +38,8 @@
 #cc-panel footer{margin-top:28px;padding-top:17px;border-top:1px solid var(--cc-shade)}
 #cc-status{display:block;font-size:10px;color:var(--cc-muted);margin-bottom:13px;min-height:16px}
 #cc-panel .cc-actions{display:flex;gap:10px}
-#cc-panel .cc-actions button{flex:1;padding:9px 3px;border:1px solid var(--cc-edge);border-radius:11px;background:var(--cc-base);color:var(--cc-accent-ink);box-shadow:var(--cc-small);font-size:11px}
+#cc-panel .cc-actions button{flex:1;min-height:36px;padding:8px;border:1px solid var(--cc-edge);border-radius:10px;background:var(--cc-surface,var(--cc-base));color:var(--cc-accent-ink);box-shadow:var(--cc-small);font-size:12px}
+#cc-panel .cc-actions button:not(:disabled):hover{background:var(--cc-user);border-color:var(--cc-line,var(--cc-shade))}
 #cc-panel button:disabled{opacity:.45;cursor:default;box-shadow:none}
 #cc-panel :is(button,input):focus-visible,#cc-open:focus-visible,#cc-mobile-menu:focus-visible{outline:2px solid var(--cc-accent-ink);outline-offset:3px}
 @media(max-width:767px){

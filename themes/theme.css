@@ -1,4 +1,4 @@
-/* 云间 · Cloud Correspondence 1.0.8 | SillyTavern / TauriTavern
+/* 云间 · Cloud Correspondence 1.1.0 | SillyTavern / TauriTavern
    原创软气泡与石墨深色。无外链图片 / 字体，--cc-* 支持工作台微调。 */
 :root {
   --cc-theme: cloud-correspondence;
@@ -7,6 +7,13 @@
   --cc-ink: #344353; --cc-muted: #596777;
   --cc-light: #ffffff; --cc-shade: #b7c3d3; --cc-edge: #f7faff;
   --cc-accent-ink: #3f4d85; --cc-on-accent: #ffffff; --cc-user: #dbe2f1;
+  --cc-surface: color-mix(in srgb, var(--cc-base) 96%, var(--cc-light));
+  --cc-field: color-mix(in srgb, var(--cc-base) 94%, var(--cc-shade));
+  --cc-line: color-mix(in srgb, var(--cc-ink) 22%, var(--cc-base));
+  --cc-action: var(--cc-accent-ink); --cc-on-action: var(--cc-base);
+  --cc-danger: #a62e48; --cc-danger-surface: #f5e1e5;
+  --cc-success: #236743; --cc-warning: #805211;
+  --cc-control-radius: 10px; --cc-control-height: 36px;
   --cc-depth: 1; /* 凹凸强度 */
   --cc-radius: 28px; /* 气泡圆角 */
   --cc-font-size: 17px; /* 正文字号 */
@@ -21,6 +28,8 @@
   --cc-base: #292e32; --cc-accent: #dfa46b; --cc-ink: #e2e7e9; --cc-muted: #a2afb8;
   --cc-light: #394147; --cc-shade: #191d21; --cc-edge: #485159;
   --cc-accent-ink: #edb782; --cc-on-accent: #28241f; --cc-user: #30373e; color-scheme: dark;
+  --cc-danger: #ffb4c0; --cc-danger-surface: #482c36;
+  --cc-success: #9ed5b3; --cc-warning: #e7c181;
 }
 :root:not([data-cc-mode="dark"]) { color-scheme: light; }
 body {
@@ -131,10 +140,15 @@ body.hideChatAvatars #chat .mes .mes_block { grid-column: 1; }
 #leftSendForm, #rightSendForm { width: auto; flex: 0 0 auto; flex-wrap: nowrap; padding: 0; gap: 8px; align-items: center; align-self: flex-end; }
 #rightSendForm { max-width: 35%; }
 #rightSendForm > div:not(.displayNone), #leftSendForm > div { width: 48px; height: 52px; border-radius: 16px; background: var(--cc-base); color: var(--cc-muted); box-shadow: var(--cc-small); opacity: 1; border: 1px solid color-mix(in srgb, var(--cc-edge) 65%, transparent); font-size: 20px; transition: color 140ms, box-shadow 140ms; }
-#rightSendForm #send_but, #rightSendForm #mes_stop { background: var(--cc-accent); color: var(--cc-on-accent); }
+#rightSendForm #send_but, #rightSendForm #mes_stop { background: var(--cc-action); color: var(--cc-on-action); }
 #rightSendForm > div:hover, #leftSendForm > div:hover { filter: none; color: var(--cc-accent-ink); }
-#rightSendForm #send_but:hover, #rightSendForm #mes_stop:hover { color: var(--cc-on-accent); filter: brightness(1.05); }
-#send_form .mes_stop { padding: 14px 0; text-align: center; }
+#rightSendForm #send_but:hover, #rightSendForm #mes_stop:hover { color: var(--cc-on-action); filter: none; box-shadow: var(--cc-inset); }
+/* 宿主在请求开始/结束时切换 display；只定义内部布局，不强制显示停止按钮。 */
+#send_form .mes_stop { padding: 0; align-items: center; justify-content: center; text-align: center; }
+#rightSendForm :is(#stscript_pause, #stscript_continue, #stscript_stop) { padding: 0; align-items: center; justify-content: center; }
+#rightSendForm :is(#stscript_pause, #stscript_continue, #stscript_stop) > .fa-solid { background: none; color: inherit; font-size: 1em; height: auto; border-radius: 0; }
+#rightSendForm #stscript_stop { color: var(--cc-danger); background: var(--cc-danger-surface); border-color: var(--cc-danger); }
+#rightSendForm #stscript_stop:hover { color: var(--cc-danger); }
 #send_form :is(.file_attached, #file_form) { max-width: 100%; color: var(--cc-muted); }
 /* absolute + auto 不建立固定侧栏的堆叠上下文；底板、按钮与抽屉分别分层。
    !important 仅解除宿主在其他面板打开时给整个 holder 设置的 4005 层级。 */
@@ -164,44 +178,93 @@ body > .zoomed_avatar[forChar] { z-index: 33; }
 #rm_extensions_block .regex-script-label { flex-wrap: wrap; align-items: center; gap: 6px; }
 #rm_extensions_block .regex_script_name { flex: 1 1 10em; min-width: 0; white-space: normal; overflow: visible; overflow-wrap: anywhere; }
 #rm_extensions_block .regex-script-label > .flex-container { flex: 0 0 auto; max-width: 100%; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
-.drawer-content :is(h3, h4, h5) { color: var(--cc-ink); letter-spacing: .01em; }
-.drawer-content .inline-drawer { border: 0; margin-bottom: 14px; }
-.drawer-content .inline-drawer-header { border: 0; border-radius: 14px; padding: 12px 14px; gap: 12px; background: var(--cc-base); box-shadow: var(--cc-small); margin-bottom: 12px; }
-.drawer-content .inline-drawer-content { padding: 4px 4px 12px; }
-.drawer-content :is(.inline-drawer-icon, .custom-drawer-icon) { filter: none; color: var(--cc-muted); font-size: 17px; }
-.drawer-content :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="button"]):not([type="submit"]), textarea, select),
-:is(.popup, dialog) :is(.text_pole, select) { min-height: 38px; padding: 9px 12px; color: var(--cc-ink); background: var(--cc-base); border: 1px solid color-mix(in srgb, var(--cc-shade) 55%, transparent); border-radius: 12px; box-shadow: var(--cc-inset); text-shadow: none; max-width: 100%; font-family: var(--mainFontFamily); }
-.drawer-content :is(select, input[type="number"]) { font-variant-numeric: tabular-nums; }
-.drawer-content select option { color: var(--cc-ink); background: var(--cc-base); }
-.drawer-content :is(input, textarea)::placeholder { color: var(--cc-muted); opacity: .9; }
-.drawer-content input[type="range"] { appearance: none; background: var(--cc-base); border: 0; box-shadow: var(--cc-inset); border-radius: 20px; height: 10px; padding: 0; margin-block: 16px; accent-color: var(--cc-accent); }
-.drawer-content input[type="range"]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; border: 4px solid var(--cc-base); background: var(--cc-accent); box-shadow: var(--cc-small); cursor: ew-resize; }
-.drawer-content input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border: 4px solid var(--cc-base); border-radius: 50%; background: var(--cc-accent); box-shadow: var(--cc-small); }
-/* 1.19 的 neo-range-slider 自带 !important；只覆盖其材质与轨道尺寸。 */
-.drawer-content input.neo-range-slider { height: 9px !important; background: var(--cc-base) !important; box-shadow: var(--cc-inset) !important; border-radius: 9px !important; margin: 12px 0 !important; filter: none; }
-.drawer-content input[type="range"]:hover { filter: none; }
-.drawer-content input[type="checkbox"] { --SmartThemeCheckboxTickColor: var(--cc-on-accent); accent-color: var(--cc-accent); appearance: none; width: 19px; height: 19px; flex: 0 0 19px; border-radius: 6px; border: 1px solid var(--cc-shade); margin: 4px; background: var(--cc-base); box-shadow: var(--cc-inset); display: inline-grid; place-content: center; vertical-align: middle; filter: none; }
-.drawer-content input[type="checkbox"]:checked { background: var(--cc-accent); box-shadow: var(--cc-small); border-color: var(--cc-accent); }
-/* 使用宿主 ::before 的单枚勾选标记，避免与额外 ::after 叠画。 */
-.drawer-content input[type="checkbox"]::before { width: 11px; height: 11px; }
-.drawer-content input[type="radio"] { accent-color: var(--cc-accent); width: 18px; height: 18px; }
-.drawer-content input:disabled { opacity: .5; cursor: not-allowed; }
-.drawer-content .checkbox_label { gap: 9px; min-height: 32px; align-items: center; }
-.menu_button, :is(.drawer-content, .popup) button:not(.drawer-icon):not(.cc-swatch):not(.cc-mode), #options, .options-content { color: var(--cc-ink); background: var(--cc-base); border-color: var(--cc-edge); border-radius: 10px; box-shadow: var(--cc-small); text-shadow: none; }
-.menu_button:hover { background: var(--cc-user); color: var(--cc-accent-ink); }
-.menu_button:active { box-shadow: var(--cc-inset); }
-.menu_button.redWarningBG, .menu_button.redWarningBG:hover { color: #b83444; border-color: #b83444; }
-:root[data-cc-mode="dark"] .menu_button.redWarningBG { color: #ff9ca7; border-color: #ff9ca7; }
-:is(.popup, dialog.popup) { color: var(--cc-ink); background: var(--cc-base); border: 1px solid var(--cc-edge); border-radius: 24px; box-shadow: var(--cc-lift); }
-#options { padding: 10px; border: 1px solid var(--cc-edge); }
+/* 云间控件体系：每类组件完整声明表面、文字、边界与状态。
+   保留宿主 DOM、显隐和事件；不使用 all:unset，也不全局去掉语义图片。 */
+:is(.drawer-content, .popup) { font-family: var(--mainFontFamily); }
+:is(.drawer-content, .popup) :is(h3, h4, h5) { color: var(--cc-ink); letter-spacing: .01em; text-shadow: none; }
+.drawer-content .inline-drawer { border: 0; margin-bottom: 12px; }
+.drawer-content .inline-drawer-header,
+:is(#extensions_settings, #extensions_settings2) .inline-drawer-toggle.inline-drawer-header,
+#user-settings-block h4,
+:is(.drawer-content, .popup) .standoutHeader {
+  background: var(--cc-surface); color: var(--cc-ink); border: 1px solid var(--cc-edge);
+  border-radius: 12px; padding: 10px 12px; min-height: 40px; gap: 12px; margin-bottom: 8px;
+  box-shadow: var(--cc-small); text-shadow: none; filter: none; font-weight: 600;
+  transition: background-color 140ms, border-color 140ms, box-shadow 140ms;
+}
+.drawer-content .inline-drawer-header:hover,
+:is(#extensions_settings, #extensions_settings2) .inline-drawer-toggle.inline-drawer-header:hover,
+:is(.drawer-content, .popup) .standoutHeader.inline-drawer-header:hover,
+.drawer-content .inline-drawer-header:has(.up) {
+  background: var(--cc-user); color: var(--cc-ink); border-color: var(--cc-line); filter: none;
+}
+.drawer-content .inline-drawer-header:has(.up) { box-shadow: var(--cc-inset); }
+.drawer-content .inline-drawer-content { padding: 8px 4px 12px; }
+:is(.drawer-content, .popup) .standoutHeader ~ .inline-drawer-content { background: var(--cc-field); color: var(--cc-ink); border: 1px solid var(--cc-line); border-radius: 12px; padding: 12px; }
+.drawer-content :is(.inline-drawer-icon, .custom-drawer-icon) { filter: none; color: var(--cc-accent-ink); font-size: 17px; }
+:is(.drawer-content, .popup) hr { background: var(--cc-line); border: 0; height: 1px; opacity: 1; margin-block: 12px; }
+:is(.drawer-content, .popup) a { color: var(--cc-accent-ink); text-underline-offset: 3px; }
+:is(.drawer-content, .popup) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="button"]):not([type="submit"]):not([type="file"]):not([type="hidden"]), textarea, select, .text_pole) {
+  min-height: var(--cc-control-height); padding: 8px 12px; color: var(--cc-ink); background: var(--cc-field);
+  border: 1px solid var(--cc-line); border-radius: var(--cc-control-radius); box-shadow: var(--cc-inset);
+  text-shadow: none; max-width: 100%; font-family: var(--mainFontFamily); filter: none;
+}
+:is(.drawer-content, .popup) :is(select, input[type="number"]) { font-variant-numeric: tabular-nums; }
+:is(.drawer-content, .popup) select option { color: var(--cc-ink); background: var(--cc-base); }
+:is(.drawer-content, .popup) :is(input, textarea)::placeholder { color: var(--cc-muted); opacity: 1; }
+:is(.drawer-content, .popup) :is(input, textarea, select):focus-visible { outline: 2px solid var(--cc-accent-ink); outline-offset: 2px; }
+:is(.drawer-content, .popup) :is(input, textarea, select)[aria-invalid="true"] { border-color: var(--cc-danger); outline-color: var(--cc-danger); }
+:is(.drawer-content, .popup) input[type="range"] { appearance: none; background: var(--cc-field); border: 1px solid var(--cc-line); box-shadow: var(--cc-inset); border-radius: 20px; height: 9px; padding: 0; margin-block: 16px; accent-color: var(--cc-accent); filter: none; }
+:is(.drawer-content, .popup) input[type="range"]::-webkit-slider-thumb { appearance: none; width: 22px; height: 22px; border-radius: 50%; border: 4px solid var(--cc-base); background: var(--cc-accent-ink); box-shadow: var(--cc-small); cursor: ew-resize; }
+:is(.drawer-content, .popup) input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 4px solid var(--cc-base); border-radius: 50%; background: var(--cc-accent-ink); box-shadow: var(--cc-small); }
+/* 宿主 neo-range-slider 的几何有 !important；仅接管轨道材质与尺寸。 */
+.drawer-content input.neo-range-slider { height: 9px !important; background: var(--cc-field) !important; box-shadow: var(--cc-inset) !important; border-radius: 9px !important; margin: 12px 0 !important; filter: none; }
+/* 原生框底色跟随正文色，通用勾色不再依赖导入时缓存的 RGB 通道。 */
+input[type="checkbox"] { --SmartThemeCheckboxTickColor: var(--cc-base); }
+:is(.drawer-content, .popup) input[type="checkbox"] {
+  --SmartThemeCheckboxTickColor: var(--cc-on-accent); appearance: none; accent-color: var(--cc-accent);
+  width: 19px; height: 19px; flex: 0 0 19px; border-radius: 6px; border: 1px solid var(--cc-line);
+  margin: 4px; padding: 0; background: var(--cc-field); box-shadow: var(--cc-inset); vertical-align: middle; filter: none;
+}
+:is(.drawer-content, .popup) input[type="checkbox"]:checked { background: var(--cc-accent); box-shadow: var(--cc-small); border-color: var(--cc-accent-ink); }
+:is(.drawer-content, .popup) input[type="checkbox"]::before { content: ""; width: 11px; height: 11px; box-shadow: inset 1em 1em var(--SmartThemeCheckboxTickColor); clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); transform: scale(0); transform-origin: center; transition: transform 120ms; }
+:is(.drawer-content, .popup) input[type="checkbox"]:checked::before { transform: scale(1); }
+:is(.drawer-content, .popup) input[type="radio"] { appearance: none; width: 18px; height: 18px; margin: 4px; padding: 0; border: 1px solid var(--cc-line); border-radius: 50%; background: var(--cc-field); box-shadow: var(--cc-inset); vertical-align: middle; filter: none; }
+:is(.drawer-content, .popup) input[type="radio"]:checked { border-color: var(--cc-accent-ink); background: radial-gradient(circle, var(--cc-accent-ink) 0 4px, var(--cc-field) 4.5px); }
+:is(.drawer-content, .popup) :is(input, select, textarea):disabled { opacity: .55; filter: none; cursor: not-allowed; }
+:is(.drawer-content, .popup) .checkbox_label { gap: 8px; min-height: 32px; align-items: center; }
+.menu_button, :is(.drawer-content, .popup) button:not(.drawer-icon):not(.cc-swatch):not(.cc-mode) {
+  color: var(--cc-ink); background: var(--cc-surface); border: 1px solid var(--cc-edge);
+  border-radius: var(--cc-control-radius); box-shadow: var(--cc-small); text-shadow: none;
+  filter: none; transition: background-color 140ms, border-color 140ms, box-shadow 140ms;
+}
+:is(.drawer-content, .popup) .buttons_block .menu_button { filter: none; }
+:is(.drawer-content, .popup) button:not([class*="fa-"]) { font-family: var(--mainFontFamily); }
+:is(.drawer-content, .popup) .menu_button, :is(.drawer-content, .popup) button:not(.drawer-icon):not(.cc-swatch):not(.cc-mode) { min-height: 32px; padding: 6px 10px; }
+.menu_button:not(.disabled):not([disabled]):hover { background: var(--cc-user); color: var(--cc-accent-ink); border-color: var(--cc-line); filter: none; }
+.menu_button:not(.disabled):not([disabled]):active, .menu_button.toggleable.toggled, .menu_button.active { background: var(--cc-user); color: var(--cc-accent-ink); box-shadow: var(--cc-inset); border-color: var(--cc-accent-ink); }
+.popup .menu_button.popup-button-ok:not(.redWarningBG):not(.red_button) { background: var(--cc-action); color: var(--cc-on-action); border-color: var(--cc-accent-ink); box-shadow: var(--cc-small); }
+.popup .menu_button.popup-button-ok:not(.redWarningBG):not(.red_button):hover { background: var(--cc-action); color: var(--cc-on-action); box-shadow: var(--cc-inset); filter: none; }
+/* 危险操作的宿主底色带 !important；成对覆盖前景/底色，保留警示语义。 */
+:is(.drawer-content, .popup) :is(.redWarningBG, .red_button) { background: var(--cc-danger-surface) !important; color: var(--cc-danger); border-color: var(--cc-danger); }
+:is(.drawer-content, .popup) :is(.redWarningBG, .red_button):hover { background: var(--cc-danger) !important; color: var(--cc-danger-surface); }
+.menu_button.disabled, .menu_button[disabled], :is(.drawer-content, .popup) button:disabled { opacity: .5; filter: none; box-shadow: none; cursor: not-allowed; }
+:is(.popup, dialog.popup) { color: var(--cc-ink); background: var(--cc-base); border: 1px solid var(--cc-edge); border-radius: 24px; box-shadow: var(--cc-lift); padding: 20px; text-shadow: none; }
+.popup .popup-controls { gap: 10px; padding-top: 12px; }
+.popup .popup-controls .menu_button { min-height: 36px; padding: 8px 16px; }
+#options, .options-content { color: var(--cc-ink); background: var(--cc-base); border: 1px solid var(--cc-line); border-radius: 12px; box-shadow: var(--cc-small); text-shadow: none; }
+#options { padding: 8px; }
 .options-content { box-shadow: none; }
-.options-content a { border-radius: 8px; padding: 10px; }
-.options-content a:hover { background: var(--cc-user); }
-:is(.character_select, .group_select, .bogus_folder_select) { border-radius: 14px; padding: 10px; margin-block: 4px; }
-:is(.character_select, .group_select, .bogus_folder_select):hover { background: var(--cc-user); box-shadow: var(--cc-inset); }
+.options-content a { color: var(--cc-ink); border-radius: 8px; padding: 10px; }
+.options-content a:hover { background: var(--cc-user); color: var(--cc-accent-ink); }
+:is(.character_select, .group_select, .bogus_folder_select) { border-radius: 14px; padding: 10px; margin-block: 4px; border: 1px solid transparent; }
+:is(.character_select, .group_select, .bogus_folder_select):hover { background: var(--cc-user); box-shadow: var(--cc-inset); border-color: var(--cc-line); }
 .character_select .avatar img, .group_select .avatar img { border-radius: 12px; box-shadow: var(--cc-small); border-color: var(--cc-edge); }
-.drawer-content .select2-container .select2-selection { background: var(--cc-base); border-color: var(--cc-shade); border-radius: 10px; color: var(--cc-ink); box-shadow: var(--cc-inset); min-height: 36px; }
-.select2-dropdown { color: var(--cc-ink); background: var(--cc-base); border-color: var(--cc-shade); }
+:is(.drawer-content, .popup) .select2-container .select2-selection { background: var(--cc-field); border: 1px solid var(--cc-line); border-radius: var(--cc-control-radius); color: var(--cc-ink); box-shadow: var(--cc-inset); min-height: var(--cc-control-height); }
+:is(.drawer-content, .popup) .select2-container .select2-selection__rendered { color: var(--cc-ink); }
+.select2-dropdown { color: var(--cc-ink); background: var(--cc-surface); border-color: var(--cc-line); border-radius: 10px; box-shadow: var(--cc-small); overflow: hidden; }
+.select2-container--default .select2-search--dropdown .select2-search__field { color: var(--cc-ink); background: var(--cc-field); border: 1px solid var(--cc-line); border-radius: 6px; }
+.select2-container--default .select2-results__option[aria-selected="true"] { background: var(--cc-user); color: var(--cc-ink); }
 .select2-container--default .select2-results__option--highlighted[aria-selected] { background: var(--cc-accent); color: var(--cc-on-accent); }
 /* 保留 Toastr 原生类型配色、图标定位与 no-repeat；background 简写会把图标重置为平铺。 */
 #toast-container > div { border: 1px solid var(--cc-edge); box-shadow: var(--cc-small); opacity: 1; border-radius: 14px; }
@@ -279,6 +342,10 @@ body > .zoomed_avatar[forChar] { z-index: 33; }
   html[data-cc-host="tt"] body { --topBarBlockSize: 78px; }
   html[data-cc-host="tt"][data-cc-menu] body { --topBarBlockSize: var(--cc-menu-height, 190px); }
   html[data-cc-host="tt"] #top-settings-holder { inset: var(--tt-inset-top, 0px) 0 auto; width: 100%; padding-inline: var(--tt-inset-left, 0px) var(--tt-inset-right, 0px); height: 66px; bottom: auto; flex-direction: row; flex-wrap: nowrap; justify-content: flex-end; gap: 7px; padding-block: 6px; border-radius: 18px; }
+  /* TT 将顶栏强制 fixed，形成独立堆叠上下文；不能沿用 ST absolute 的 auto。
+     覆盖本主题的通用 !important，保留 TT 几何；打开抽屉时整体提升到面板层。 */
+  html[data-cc-host="tt"] #top-settings-holder { z-index: 32 !important; }
+  html[data-cc-host="tt"] #top-settings-holder:has(.drawer-content.openDrawer) { z-index: 3005 !important; }
   html[data-cc-host="tt"] #top-settings-holder > .drawer { flex: 0 0 44px; width: 44px; min-width: 0; height: 44px; min-height: 44px; }
   html[data-cc-host="tt"] #top-settings-holder > .drawer > .drawer-toggle { border-radius: 11px; box-shadow: none; }
   html[data-cc-host="tt"] #top-settings-holder > .drawer > .drawer-toggle .drawer-icon { font-size: 18px; }
