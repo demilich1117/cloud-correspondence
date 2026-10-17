@@ -1,4 +1,4 @@
-/* 云间 · Cloud Correspondence 1.0.3 | SillyTavern 1.19.0
+/* 云间 · Cloud Correspondence 1.0.8 | SillyTavern / TauriTavern
    原创软气泡与石墨深色。无外链图片 / 字体，--cc-* 支持工作台微调。 */
 :root {
   --cc-theme: cloud-correspondence;
@@ -75,7 +75,7 @@ body {
 #chat .mes .ch_name { order: 0; min-height: 36px; align-items: center; gap: 4px 12px; padding: 0 4px 9px; font-size: 13px; line-height: 1.4; }
 #chat .mes .name_text { font-size: 14px; font-weight: 650; color: var(--cc-accent-ink); }
 #chat .mes .timestamp { font-size: 11px; color: var(--cc-muted); opacity: 1; }
-#chat .mes .mes_text { order: 1; padding: 22px 24px; font-family: var(--mainFontFamily); font-size: var(--cc-font-size); line-height: var(--cc-line-height); font-weight: 400; color: var(--cc-ink); }
+#chat .mes .mes_text { order: 2; padding: 22px 24px; font-family: var(--mainFontFamily); font-size: var(--cc-font-size); line-height: var(--cc-line-height); font-weight: 400; color: var(--cc-ink); }
 #chat .mes .mes_text p { margin: 0 0 .85em; }
 #chat .mes .mes_text p:last-child { margin-bottom: 0; }
 #chat .mes[is_user="true"] { grid-template-columns: minmax(0, 1fr) var(--cc-avatar); align-self: flex-end; width: fit-content; max-width: 80%; }
@@ -93,9 +93,15 @@ body {
 #chat .mes .mes_edit_buttons { flex-wrap: wrap; gap: 6px; }
 #chat .mes .extraMesButtons { background: var(--cc-base); border-radius: 12px; box-shadow: var(--cc-small); z-index: 4; }
 #chat .mes :is(.edit_textarea, .reasoning_edit_textarea) { width: 100%; border-radius: 16px; padding: 16px; background: var(--cc-base); color: var(--cc-ink); box-shadow: var(--cc-inset); font-size: var(--cc-font-size); line-height: 1.75; }
-#chat .mes .mes_reasoning_details { order: 2; margin: 0 16px 16px; border: 0; background: transparent; border-radius: 12px; overflow: hidden; }
-#chat .mes .mes_reasoning_summary { margin: 0; min-width: 0; padding: 9px 12px; background: var(--cc-base); color: var(--cc-accent-ink); border-radius: 12px; box-shadow: var(--cc-inset); min-height: 38px; cursor: pointer; }
-#chat .mes .mes_reasoning_header { padding: 0; border: 0; box-shadow: none; background: none; font-size: 12px; }
+/* Compact native toggle: every pixel of the collapsed pill belongs to the header. */
+#chat .mes .mes_reasoning_details { order: 1; margin: 16px 24px 4px; border: 0; background: transparent; border-radius: 10px; overflow: hidden; }
+#chat .mes .mes_reasoning_summary { margin: 0; width: fit-content; max-width: 100%; min-width: 0; padding: 0; gap: 0; background: var(--cc-base); color: var(--cc-accent-ink); border-radius: 10px; box-shadow: var(--cc-inset); min-height: 0; cursor: pointer; }
+#chat .mes .mes_reasoning_header_block { min-width: 0; margin: 0; padding: 0; gap: 0; }
+#chat .mes .mes_reasoning_header { position: relative; box-sizing: border-box; width: 100%; min-width: 0; min-height: 38px; margin: 0; padding: 8px 38px 8px 14px; border: 0; border-radius: 10px; box-shadow: none; background: none; font-size: 12px; }
+#chat .mes .mes_reasoning_header_title { min-width: 0; overflow-wrap: anywhere; }
+#chat .mes .mes_reasoning_arrow { right: 12px; }
+#chat .mes .mes_reasoning_header:hover { background: color-mix(in srgb, var(--cc-accent-ink) 6%, transparent); }
+#chat .mes .mes_reasoning_header:focus-visible { outline: 2px solid var(--cc-accent-ink); outline-offset: -2px; }
 #chat .mes .mes_reasoning { margin: 0; padding: 16px 10px 8px; color: var(--cc-muted); font-size: 14px; line-height: 1.75; }
 #chat .mes :is(.mes_media_wrapper, .mes_file_wrapper) { order: 3; max-width: 100%; padding-inline: 20px; }
 #chat .mes .mes_bias { order: 4; padding-inline: 20px; }
@@ -145,10 +151,19 @@ body > .zoomed_avatar[forChar] { z-index: 33; }
 #top-settings-holder > .drawer > .drawer-toggle:active { box-shadow: var(--cc-inset); }
 #top-settings-holder > .drawer > .drawer-toggle:focus-within { outline: 2px solid var(--cc-accent-ink); outline-offset: 3px; }
 .drawer-content, #movingDivs > .drawer-content { background: var(--cc-base); color: var(--cc-ink); border: 1px solid var(--cc-edge); border-radius: 24px; padding: 22px; box-shadow: var(--cc-lift); backdrop-filter: none; text-shadow: none; }
-#top-settings-holder .drawer-content { position: fixed; z-index: 3005; pointer-events: auto; top: 22px; left: auto; right: 22px; margin: 0; width: min(440px, calc(100vw - 130px)); min-width: 0; max-height: calc(100dvh - 44px); }
+#top-settings-holder .drawer-content { position: fixed; z-index: 3005; pointer-events: auto; top: 22px; left: 108px; right: auto; margin: 0; width: min(560px, calc(100vw - 130px)); min-width: 0; max-height: calc(100dvh - 44px); }
 #top-settings-holder :is(#user-settings-block, #AdvancedFormatting, #WorldInfo) { width: min(800px, calc(100vw - 130px)); }
+#top-settings-holder #rm_extensions_block { width: min(960px, calc(100vw - 130px)); container: cc-extensions / inline-size; }
 #top-settings-holder .drawer-content.openDrawer { overflow-y: auto; overflow-x: hidden; }
-body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc(100vw - 130px) !important; top: 22px !important; right: 22px !important; }
+  html:not([data-cc-host="tt"]) body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc(100vw - 130px) !important; top: 22px !important; left: 108px !important; right: auto !important; }
+/* 扩展栏按抽屉可用宽度换列，正则名称和操作保留各自的空间。 */
+#rm_extensions_block :is(#extensions_settings, #extensions_settings2) { min-width: 0; flex: 1 1 360px; width: auto; }
+@container cc-extensions (max-width: 760px) {
+  #rm_extensions_block :is(#extensions_settings, #extensions_settings2) { flex-basis: 100%; width: 100%; }
+}
+#rm_extensions_block .regex-script-label { flex-wrap: wrap; align-items: center; gap: 6px; }
+#rm_extensions_block .regex_script_name { flex: 1 1 10em; min-width: 0; white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+#rm_extensions_block .regex-script-label > .flex-container { flex: 0 0 auto; max-width: 100%; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
 .drawer-content :is(h3, h4, h5) { color: var(--cc-ink); letter-spacing: .01em; }
 .drawer-content .inline-drawer { border: 0; margin-bottom: 14px; }
 .drawer-content .inline-drawer-header { border: 0; border-radius: 14px; padding: 12px 14px; gap: 12px; background: var(--cc-base); box-shadow: var(--cc-small); margin-bottom: 12px; }
@@ -201,6 +216,12 @@ body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc
 }
 @media (max-height: 520px) and (min-width: 768px) { #top-settings-holder { overflow-y: auto; overflow-x: hidden; } }
 @media (max-width: 1000px) { #chat { padding-inline: 16px; } #chat .mes { width: 98%; } #chat .mes[is_user="true"] { max-width: 90%; } }
+/* 宿主在 1000px 以下强制抽屉全屏；仍使用侧栏时保留入口和左侧间距。 */
+@media (width > 767px) and (max-width: 1000px) {
+  html:not([data-cc-host="tt"]) #top-settings-holder .drawer-content { left: 108px !important; right: auto !important; width: min(560px, calc(100dvw - 130px)) !important; }
+  html:not([data-cc-host="tt"]) #top-settings-holder :is(#user-settings-block, #AdvancedFormatting, #WorldInfo) { width: min(800px, calc(100dvw - 130px)) !important; }
+  html:not([data-cc-host="tt"]) #top-settings-holder #rm_extensions_block { width: min(960px, calc(100dvw - 130px)) !important; }
+}
 @media (max-width: 767px) {
   :root { --cc-font-size: 16px; --cc-avatar: 40px; --cc-gap: 20px; --cc-radius: 23px; }
   html, body { height: 100%; min-height: 0; }
@@ -230,8 +251,9 @@ body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc
   #chat .mes[is_user="true"] { max-width: 92%; min-width: 180px; grid-template-columns: minmax(0, 1fr) 40px; }
   #chat .mes[is_user="true"] .mes_block { grid-column: 1 / -1; }
   #chat .mes[is_user="true"] .ch_name { padding-left: 0; padding-right: 50px; }
-  #chat .mes .mes_reasoning_details { margin: 0 12px 12px; }
-  #chat .mes .mes_reasoning_summary { font-size: 11px; padding: 8px 10px; min-height: 40px; }
+  #chat .mes .mes_reasoning_details { margin: 14px 18px 4px; }
+  #chat .mes .mes_reasoning_summary { font-size: 11px; }
+  #chat .mes .mes_reasoning_header { min-height: 44px; padding-block: 10px; }
   #chat .mes :is(.swipe_left, .swipe_right) { width: 34px; height: 30px; }
   #form_sheld { padding: 6px 10px 10px; }
   #send_form { padding: 9px; border-radius: 22px; }
@@ -242,14 +264,53 @@ body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc
   #leftSendForm, #rightSendForm { width: auto; flex-wrap: nowrap; }
   #leftSendForm { gap: 5px; }
   #top-settings-holder .drawer-content, #top-settings-holder :is(#user-settings-block, #AdvancedFormatting, #WorldInfo) { top: calc(80px + env(safe-area-inset-top)); right: 8px; left: 8px; width: auto; min-width: 0; margin: 0; max-height: calc(100dvh - 98px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: 16px; border-radius: 20px; }
-  body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc(100vw - 16px) !important; top: calc(80px + env(safe-area-inset-top)) !important; right: 8px !important; }
+  html:not([data-cc-host="tt"]) body:not(.movingUI) #top-settings-holder .drawer-content.maximized { width: calc(100vw - 16px) !important; top: calc(80px + env(safe-area-inset-top)) !important; left: 8px !important; right: 8px !important; }
   .drawer-content .inline-drawer-header { padding: 12px; }
   /* 宿主 mobile-styles.css 强制抽屉全宽；保留窄屏边距。 */
-  #top-settings-holder .drawer-content { width: calc(100dvw - 16px) !important; left: 8px !important; }
+  html:not([data-cc-host="tt"]) #top-settings-holder .drawer-content { width: calc(100dvw - 16px) !important; left: 8px !important; }
   .drawer-content .checkbox_label { min-height: 40px; }
   .drawer-content :is(input:not([type="checkbox"]):not([type="range"]):not([type="radio"]), select) { min-height: 42px; }
   html[data-cc-active][data-cc-menu] #top-settings-holder :is(.drawer-content, #user-settings-block, #AdvancedFormatting, #WorldInfo) { top: var(--cc-menu-bottom, 190px); max-height: calc(100dvh - var(--cc-menu-bottom, 190px) - max(18px, env(safe-area-inset-bottom))); }
-  html[data-cc-active][data-cc-menu] body:not(.movingUI) #top-settings-holder .drawer-content.maximized { top: var(--cc-menu-bottom, 176px) !important; }
+  html:not([data-cc-host="tt"])[data-cc-active][data-cc-menu] body:not(.movingUI) #top-settings-holder .drawer-content.maximized { top: var(--cc-menu-bottom, 176px) !important; }
 }
 @media (max-width: 359px) { #chat .mes .timestamp { max-width: 60px; overflow: hidden; white-space: nowrap; } #chat .mes .mes_text { padding: 16px; } }
+/* TT 的移动几何由宿主管理。只同步菜单占位，不重算键盘或触碰 lift/spacer。 */
+@media (max-width: 1000px) {
+  html[data-cc-host="tt"] body { --topBarBlockSize: 78px; }
+  html[data-cc-host="tt"][data-cc-menu] body { --topBarBlockSize: var(--cc-menu-height, 190px); }
+  html[data-cc-host="tt"] #top-settings-holder { inset: var(--tt-inset-top, 0px) 0 auto; width: 100%; padding-inline: var(--tt-inset-left, 0px) var(--tt-inset-right, 0px); height: 66px; bottom: auto; flex-direction: row; flex-wrap: nowrap; justify-content: flex-end; gap: 7px; padding-block: 6px; border-radius: 18px; }
+  html[data-cc-host="tt"] #top-settings-holder > .drawer { flex: 0 0 44px; width: 44px; min-width: 0; height: 44px; min-height: 44px; }
+  html[data-cc-host="tt"] #top-settings-holder > .drawer > .drawer-toggle { border-radius: 11px; box-shadow: none; }
+  html[data-cc-host="tt"] #top-settings-holder > .drawer > .drawer-toggle .drawer-icon { font-size: 18px; }
+  html[data-cc-host="tt"] #top-settings-holder > .drawer > .drawer-toggle:has(.openIcon) { box-shadow: var(--cc-inset); }
+  html[data-cc-host="tt"]:not([data-cc-menu]) #top-settings-holder > .drawer:not(#cc-appearance-button):not(#rightNavHolder):not(#user-settings-button) { display: none; }
+  html[data-cc-host="tt"][data-cc-menu] #top-settings-holder { height: auto; min-height: 66px; flex-wrap: wrap; justify-content: flex-start; padding-block: 60px 10px; gap: 10px; }
+  html[data-cc-host="tt"][data-cc-menu] #top-settings-holder::after { content: "全部功能"; position: absolute; z-index: 32; top: 20px; right: max(16px, var(--tt-inset-right, 0px)); font-size: 12px; color: var(--cc-muted); pointer-events: none; }
+  /* 狭窄桌面 TT 没有 mobile firewall；这里提供同一顶栏布局的普通声明。 */
+  html[data-cc-host="tt"] #sheld { left: 0; right: 0; bottom: 0; width: 100%; margin: 0; }
+  html[data-cc-host="tt"] #chat { padding-left: max(12px, var(--tt-inset-left, 0px)); padding-right: max(12px, var(--tt-inset-right, 0px)); }
+  html[data-cc-host="tt"] #top-settings-holder .drawer-content { border-radius: 20px; padding: 16px; }
+}
+/* Android 宽屏仍由 TT 管理 sheld 顶部；让左侧轨道不额外占一条空顶栏。 */
+@media (min-width: 1001px) {
+  html[data-cc-host="tt"] body { --topBarBlockSize: 22px; }
+  html[data-cc-host="tt"] #form_sheld { padding-bottom: max(var(--tt-inset-bottom, 0px), 0px); }
+  html[data-cc-host="tt"] #top-settings-holder { left: calc(18px + var(--tt-inset-left, 0px)); height: calc(var(--tt-base-viewport-height, 100dvh) - 40px - var(--tt-inset-top, 0px) - var(--tt-inset-bottom, 0px)); }
+}
+/* TT 自有展开输入按钮保留正文空间；不改变按钮事件或位置。 */
+#send_textarea.tt-chat-input--has-expand { padding-right: calc(var(--tt-chat-input-expand-hit-size, 24px) + 12px); }
 @media (prefers-reduced-motion: reduce) { #chat *, #top-settings-holder *, #send_form * { animation-duration: 0s; transition-duration: 0s; } }
+
+
+/* Tavern Theme Studio */
+/* 头像几何只作用于外框，避免图片重复偏移 */
+#chat .mes .avatar {
+  margin-left: 0px !important;
+  margin-top: -24px !important;
+}
+
+/* 角色思考折叠栏 */
+#chat .mes[is_user="false"] .mes_reasoning_summary {
+  line-height: 2.55 !important;
+  margin-bottom: 5px !important;
+}

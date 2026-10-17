@@ -2,7 +2,8 @@ import { DEFAULTS, PRESETS, hex, derive, normalize, resolveMode } from './palett
 const KEY='cloudCorrespondence';
 let mounted=false, active=false, settings, panel, toggle, observer, railObserver, ctx, style, lastFocus, frame, undo=null;
 const system=matchMedia('(prefers-color-scheme: dark)');
-const compact=matchMedia('(max-width: 767px)');
+const ttHost=Boolean(window.__TAURITAVERN__);
+const compact=matchMedia(ttHost?'(max-width: 1000px)':'(max-width: 767px)');
 const root=document.documentElement;
 let handlers;
 const byId=id=>document.getElementById(id);
@@ -68,14 +69,16 @@ function schedule(){if(!frame)frame=requestAnimationFrame(reconcile);}
 function mount(){
  if(mounted||!byId('top-settings-holder'))return;
  mounted=true;handlers=new AbortController();ctx=SillyTavern.getContext();settings=normalize(ctx.extensionSettings[KEY]);
+ if(ttHost)root.dataset.ccHost='tt';
  style=document.createElement('style');style.id='cc-runtime';document.head.append(style);
  const holder=document.createElement('div');holder.id='cc-appearance-button';holder.className='drawer';holder.hidden=true;
  toggle=document.createElement('button');toggle.type='button';toggle.id='cc-open';toggle.title='云间 · 外观';toggle.setAttribute('aria-label','云间外观');toggle.setAttribute('aria-haspopup','dialog');toggle.setAttribute('aria-expanded','false');toggle.innerHTML='<i class="fa-solid fa-palette" aria-hidden="true"></i>';holder.append(toggle);
  const menu=document.createElement('button');menu.id='cc-mobile-menu';menu.type='button';menu.innerHTML='<i class="fa-solid fa-bars" aria-hidden="true"></i><span class="cc-menu-label">菜单</span><i class="fa-solid fa-chevron-down cc-menu-chevron" aria-hidden="true"></i>';menu.hidden=true;
  byId('top-settings-holder').prepend(menu,holder);
  setMenu(false);
- railObserver=new ResizeObserver(()=>{if(active)root.style.setProperty('--cc-menu-bottom',Math.ceil(byId('top-settings-holder').getBoundingClientRect().bottom+12)+'px');});railObserver.observe(byId('top-settings-holder'));
+ railObserver=new ResizeObserver(()=>{if(active){const rect=byId('top-settings-holder').getBoundingClientRect();root.style.setProperty('--cc-menu-bottom',Math.ceil(rect.bottom+12)+'px');root.style.setProperty('--cc-menu-height',Math.ceil(rect.height+12)+'px');}});railObserver.observe(byId('top-settings-holder'));
  panel=document.createElement('dialog');panel.id='cc-panel';panel.setAttribute('aria-labelledby','cc-title');
+ if(ttHost)panel.dataset.ttMobileSurface='fullscreen-window';
  panel.innerHTML=`<header class="cc-header"><div><span class="cc-eyebrow">CLOUD CORRESPONDENCE</span><h2 id="cc-title">云间 <span>· 外观</span></h2></div><button type="button" id="cc-close" aria-label="关闭外观面板"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></header>
  <p class="cc-intro">让界面留一点柔软。</p>
  <div class="cc-segment" role="group" aria-label="明暗模式"><button type="button" data-mode="light">☀ 浅色</button><button type="button" data-mode="dark">☾ 深色</button><button type="button" data-mode="system">跟随系统</button></div>
@@ -120,6 +123,6 @@ export function activate(){if(globalThis.SillyTavern){const c=SillyTavern.getCon
 export function disable(){
  close();observer?.disconnect();railObserver?.disconnect();if(frame)cancelAnimationFrame(frame);frame=undefined;handlers?.abort();ctx?.eventSource.removeListener(ctx.event_types.SETTINGS_UPDATED,schedule);
  ['cc-appearance-button','cc-mobile-menu','cc-panel','cc-runtime'].forEach(id=>byId(id)?.remove());
- ['data-cc-active','data-cc-mode','data-cc-menu'].forEach(a=>root.removeAttribute(a));root.style.removeProperty('--cc-menu-bottom');active=false;mounted=false;undo=null;
+ ['data-cc-active','data-cc-mode','data-cc-menu','data-cc-host'].forEach(a=>root.removeAttribute(a));root.style.removeProperty('--cc-menu-bottom');root.style.removeProperty('--cc-menu-height');active=false;mounted=false;undo=null;
 }
 activate();

@@ -53,5 +53,16 @@
  #cc-panel section{margin-top:22px}
  #cc-panel .cc-segment button{min-height:40px}
 }
+/* TT 的 768–1000px 同样采用移动顶部菜单。 */
+@media(max-width:1000px){
+ html[data-cc-host="tt"] #cc-open{width:44px;height:44px;font-size:19px;border-radius:13px}
+ html[data-cc-host="tt"] #cc-mobile-menu:not([hidden]){display:flex;align-items:center;justify-content:center;gap:6px;position:absolute;left:calc(8px + var(--tt-inset-left,0px));top:6px;width:84px;height:44px;padding:0 7px;font-size:14px;border-radius:13px}
+ html[data-cc-host="tt"] #cc-mobile-menu .cc-menu-label{font:600 12px/1 var(--mainFontFamily,system-ui);white-space:nowrap}
+ html[data-cc-host="tt"] #cc-mobile-menu .cc-menu-chevron{font-size:9px}
+ html[data-cc-host="tt"] #cc-mobile-menu[aria-expanded=true] .cc-menu-chevron{transform:rotate(180deg)}
+ html[data-cc-host="tt"] #cc-panel{width:auto;max-width:none;min-height:0;border-radius:24px;padding:23px}
+}
+/* fullscreen-window 的四边与键盘避让交给 TT；普通桌面 TT 也有安全回退。 */
+html[data-cc-host="tt"] #cc-panel{width:auto;max-width:none;top:max(10px,var(--tt-inset-top,0px));bottom:max(10px,var(--tt-viewport-bottom-inset,0px));max-height:calc(var(--tt-base-viewport-height,100dvh) - max(10px,var(--tt-inset-top,0px)) - max(10px,var(--tt-viewport-bottom-inset,0px)))}
 @media(prefers-reduced-motion:reduce){#cc-mobile-menu .cc-menu-chevron{transition:none}}
 @media(max-height:700px){#cc-panel{padding-top:16px}#cc-panel section{margin-top:18px}#cc-panel .cc-intro{margin-bottom:15px}#cc-panel .cc-adjust label{margin-top:12px}#cc-panel footer{margin-top:20px}}
